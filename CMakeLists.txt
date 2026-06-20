@@ -8,6 +8,7 @@ find_package(Qt6 REQUIRED COMPONENTS Quick)
 find_package(Qt6 REQUIRED COMPONENTS Svg)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt6 REQUIRED COMPONENTS SvgWidgets)
+find_package(Qt6 REQUIRED COMPONENTS Gui)
 
 qt_standard_project_setup(REQUIRES 6.10)
 
@@ -40,6 +41,8 @@ target_include_directories(appqtmusicxml PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/inc
 target_link_libraries(appqtmusicxml
     PRIVATE Qt6::Quick
 )
+
+target_link_libraries(appqtmusicxml PRIVATE Qt6::Gui)
 target_link_libraries(appqtmusicxml PRIVATE Qt6::Svg)
 target_link_libraries(appqtmusicxml PRIVATE Qt6::Widgets)
 target_link_libraries(appqtmusicxml PRIVATE Qt6::SvgWidgets)
@@ -56,6 +59,8 @@ install(TARGETS appqtmusicxml
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+
 
 
 
