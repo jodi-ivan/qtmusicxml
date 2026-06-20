@@ -21,6 +21,9 @@ qt_add_qml_module(appqtmusicxml
     QML_FILES
         Main.qml
         RESOURCES lib/.gitkeep
+SOURCES mainwindow.h mainwindow.cpp
+RESOURCES mainwindow.ui
+SOURCES musicrenderer.h musicrenderer.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
