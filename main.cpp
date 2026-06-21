@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 
         int fontId = QFontDatabase::addApplicationFont(fullpath);
         if (fontId != -1) {
-           QFontDatabase::applicationFontFamilies(fontId);
+            QFontDatabase::applicationFontFamilies(fontId);
         }
     }
     MainWindow mainWindow;
@@ -54,13 +54,21 @@ int main(int argc, char *argv[])
     QScrollArea* area = mainWindow.findChild<QScrollArea*>("scrollArea");
     MusicRenderer* musicRenderer = new MusicRenderer(area);
 
+    QObject::connect(musicRenderer, &MusicRenderer::musicRendered,
+                     &mainWindow, &MainWindow::onMusicRendered ,
+                     static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection) );
+
+    QObject::connect(&mainWindow, &MainWindow::VariantSelected,
+                     musicRenderer, &MusicRenderer::onVariantChange,
+                     static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection) );
+
     QPushButton* decrementBtn = mainWindow.findChild<QPushButton*>("btn_decrement");
     QPushButton* incrementBtn = mainWindow.findChild<QPushButton*>("btn_increment");
 
     mainWindow.setStyleSheet(" .QWidget { border: 1px solid red; } ");
 
     mainWindow.setWindowTitle("Embedded SVG Example");
-   //  mainWindow.resize(800, 1080);
+    //  mainWindow.resize(800, 1080);
 
 
     QFrame* numSelectorFrame = mainWindow.findChild<QFrame*>("num_selector_frame");
@@ -73,9 +81,7 @@ int main(int argc, char *argv[])
         QFrame* buttonHolder = mainWindow.findChild<QFrame*>("frame_2");
         QList<QPushButton*> allButtons = buttonHolder->findChildren<QPushButton*>();
 
-        qInfo() << allButtons << "all buttons";
         for (int i = 0; i < allButtons.length(); i++) {
-            // qInfo() << allButtons[i]->objectName();
             QObject::connect(allButtons[i], &QPushButton::clicked, numSelector, &NumberSelector::onSelectorChange,
                              static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
         }
@@ -84,12 +90,10 @@ int main(int argc, char *argv[])
         QObject::connect(numSelector, &QTextEdit::textChanged,  numSelector, &NumberSelector::onChange,  static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
         QObject::connect(numSelector, &NumberSelector::changeMusic, musicRenderer, &MusicRenderer::onChange, Qt::QueuedConnection);
         if (!!incrementBtn) {
-            qInfo() << "incrementBtn" << incrementBtn;
             QObject::connect(incrementBtn, &QPushButton::clicked, numSelector, &NumberSelector::onStepChange,  static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
         }
 
         if (!!decrementBtn) {
-            qInfo() << "decrementBtn" << decrementBtn;
             QObject::connect(decrementBtn, &QPushButton::clicked, numSelector, &NumberSelector::onStepChange,  static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
         }
     }

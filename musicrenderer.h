@@ -23,9 +23,13 @@ public:
     explicit MusicRenderer(QObject *parent = nullptr);
     void setRenderer(QSvgRenderer* renderer);
 
+signals:
+    void musicRendered(int numbered, std::string variant , int totalVariant, int totalVerse);
+
 
 public slots:
     void onChange(int num, std::string variant, int verse, bool focusMode);
+    void onVariantChange(std::string selected);
 };
 
 #endif // MUSICRENDERER_H

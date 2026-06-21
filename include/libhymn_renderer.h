@@ -86,7 +86,9 @@ typedef struct { void *data; GoInt len; GoInt cap; } GoSlice;
 extern "C" {
 #endif
 
+extern char* RenderHymnSVGWithInfo(int number, char* variant, char* configJson, int* totalVerse, int* totalVariant);
 extern char* RenderHymnSVG(int number, char* variant, char* configJson);
+extern void FreeRenderedString(char* ptr);
 
 #ifdef __cplusplus
 }

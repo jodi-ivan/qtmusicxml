@@ -15,14 +15,19 @@ void MusicRenderer::setRenderer(QSvgRenderer *renderer)
 
 void MusicRenderer::onChange(int num, std::string variant, int verse, bool focusMode)
 {
-    qInfo() << "changed" << num;
-     try {
-        QScrollArea* area = qobject_cast<QScrollArea*>(this->parent());
-          if (!(!!area)) {
-            return;
-       }
 
-        char* fromDll = RenderHymnSVG(num, nullptr, nullptr);
+    try {
+        QScrollArea* area = qobject_cast<QScrollArea*>(this->parent());
+        if (!(!!area)) {
+            return;
+        }
+        int* totalVariant = new int(0);
+        int* totalVerse = new int(0);
+        char* variantPtr = nullptr;
+        if (variant != "") {
+            variantPtr = variant.data();
+        }
+        char* fromDll = RenderHymnSVGWithInfo(num, variantPtr, nullptr, totalVerse, totalVariant);
         QString svgString =  QString::fromUtf8(fromDll);
 
         // 2. Convert to QByteArray
@@ -38,10 +43,21 @@ void MusicRenderer::onChange(int num, std::string variant, int verse, bool focus
             svgWidget->renderer()->load(svgBytes);
             if (area) {
                 area->setWidget(svgWidget);
+                this->hymnNum = num;
+                this->variant = variant;
+                this->verse = verse;
+                this->focusMode = focusMode;
+                emit this->musicRendered(num, variant, *totalVariant, *totalVerse);
             }
         }
+
     } catch (const std::exception& e) {
         qInfo() << "failed" << e.what();
     }
 
+}
+
+void MusicRenderer::onVariantChange(std::string selected)
+{
+    this->onChange(this->hymnNum, selected, this->verse, this->focusMode);
 }
