@@ -212,7 +212,7 @@
           <x>10</x>
           <y>90</y>
           <width>331</width>
-          <height>81</height>
+          <height>71</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout_3">
@@ -223,7 +223,7 @@
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>20</width>
+             <width>10</width>
              <height>40</height>
             </size>
            </property>
@@ -238,12 +238,18 @@
          </item>
          <item row="0" column="3">
           <layout class="QGridLayout" name="gridLayout_4">
-           <item row="1" column="0">
-            <widget class="QTextEdit" name="textEdit">
-             <property name="placeholderText">
-              <string>1</string>
+           <item row="2" column="0">
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
              </property>
-            </widget>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
            <item row="0" column="0">
             <spacer name="horizontalSpacer">
@@ -258,18 +264,15 @@
              </property>
             </spacer>
            </item>
-           <item row="2" column="0">
-            <spacer name="horizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+           <item row="1" column="0">
+            <widget class="QFrame" name="num_selector_frame">
+             <property name="frameShape">
+              <enum>QFrame::Shape::StyledPanel</enum>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
+             <property name="frameShadow">
+              <enum>QFrame::Shadow::Raised</enum>
              </property>
-            </spacer>
+            </widget>
            </item>
           </layout>
          </item>
@@ -313,7 +316,7 @@
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>20</width>
+             <width>10</width>
              <height>40</height>
             </size>
            </property>
@@ -327,11 +330,24 @@
           <x>10</x>
           <y>10</y>
           <width>331</width>
-          <height>72</height>
+          <height>31</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout_5">
          <item row="0" column="1">
+          <spacer name="verticalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>1</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="0" column="2">
           <widget class="QPushButton" name="pushButton_3">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
@@ -350,21 +366,12 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="2">
-          <spacer name="verticalSpacer_6">
-           <property name="orientation">
-            <enum>Qt::Orientation::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
          <item row="0" column="0">
-          <widget class="QTextEdit" name="textEdit_2"/>
+          <widget class="QTextEdit" name="textEdit_2">
+           <property name="placeholderText">
+            <string>Search</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
