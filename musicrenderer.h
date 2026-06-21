@@ -3,7 +3,11 @@
 
 #include <QObject>
 #include <QDebug>
+#include <QScrollArea>
+#include <QSvgRenderer>
+#include <QSvgWidget>
 
+#include "libhymn_renderer.h"
 
 class MusicRenderer : public QObject
 {
@@ -13,9 +17,11 @@ class MusicRenderer : public QObject
     std::string variant;
     int verse;
     bool focusMode;
+    QSvgRenderer* svgRenderer;
 
 public:
     explicit MusicRenderer(QObject *parent = nullptr);
+    void setRenderer(QSvgRenderer* renderer);
 
 
 public slots:

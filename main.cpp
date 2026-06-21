@@ -10,6 +10,7 @@
 #include <QDir>
 #include <QScrollArea>
 #include <QPushButton>
+#include <QButtonGroup>
 
 
 #include "libhymn_renderer.h"
@@ -43,38 +44,35 @@ int main(int argc, char *argv[])
         QString fullpath = appDir.absolutePath() + QString("/resource/") + QString::fromStdString(fonts[i]);
 
         int fontId = QFontDatabase::addApplicationFont(fullpath);
-        qInfo() << "Loaded " << fontId << fonts[i] << "path" << fullpath;
         if (fontId != -1) {
-            QStringList fontFamilies = QFontDatabase::applicationFontFamilies(fontId);
-            qInfo() << fontFamilies;
+           QFontDatabase::applicationFontFamilies(fontId);
         }
     }
-
-    MusicRenderer musicRenderer;
     MainWindow mainWindow;
 
-    QObject::connect(&mainWindow, &MainWindow::changeMusic, &musicRenderer, &MusicRenderer::onChange, Qt::QueuedConnection);
+    QScrollArea* area = mainWindow.findChild<QScrollArea*>("scrollArea");
+    MusicRenderer* musicRenderer = new MusicRenderer(area);
+
+
+    QObject::connect(&mainWindow, &MainWindow::changeMusic, musicRenderer, &MusicRenderer::onChange, Qt::QueuedConnection);
 
     mainWindow.setStyleSheet(" .QWidget { border: 1px solid red; } ");
 
     mainWindow.setWindowTitle("Embedded SVG Example");
    //  mainWindow.resize(800, 1080);
 
-    // 3. Create a layout container to hold our interface pieces
-    // QRect layoutCWid;
-   // QWidget *centralWidget = new QWidget(&mainWindow);
-
-    // QVBoxLayout *layout = new QVBoxLayout(centralWidget);
-    // // QBoxLayout::SizeConstraint h;
-
-    // layout->setSizeConstraints(QBoxLayout::SetFixedSize, QBoxLayout::SetFixedSize);
-
-    QGridLayout* buttonHolder = mainWindow.findChild<QGridLayout*>("btn_selector_layout");
-
+    QFrame* buttonHolder = mainWindow.findChild<QFrame*>("frame_2");
+    qInfo() << buttonHolder << "holder layout";
     QList<QPushButton*> allButtons = buttonHolder->findChildren<QPushButton*>();
 
+    qInfo() << allButtons << "all buttons";
+    for (int i = 0; i < allButtons.length(); i++) {
+        // qInfo() << allButtons[i]->objectName();
+        QObject::connect(allButtons[i], &QPushButton::clicked, &mainWindow, &MainWindow::on_selecteor_pressed,
+                static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
+    }
 
-    char* fromDll  = RenderHymnSVG(434, nullptr, nullptr);
+    char* fromDll  = RenderHymnSVG(1, nullptr, nullptr);
     // 1. Your raw SVG string content
     QString svgString =  QString::fromUtf8(fromDll);
 
@@ -83,12 +81,12 @@ int main(int argc, char *argv[])
 
     // 3. Load via QSvgRenderer
     QSvgRenderer* renderer = new QSvgRenderer(&app);
+    musicRenderer->setRenderer(renderer);
 
     // Syntax: this->findChild<WidgetType*>("objectName");
-    QScrollArea* area = mainWindow.findChild<QScrollArea*>("scrollArea");
+
     area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     area->setAlignment(Qt::AlignHCenter);
-    qInfo() << "area found" << area;
 
     if (renderer->load(svgBytes)) {
         // Successfully loaded!
