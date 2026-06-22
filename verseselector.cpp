@@ -57,20 +57,13 @@ void VerseSelector::onMusicRendered(int numbered, std::string variant,int totalV
         return;
     }
 
-    if (this->currentHymn == numbered) {
-        return;
-    }
+    if (this->currentHymn == numbered) { return; }
 
     this->currentHymn = numbered;
-    // 1. Get the old widget
+
     QWidget *oldWidget = this->buttonContainers->takeWidget();
+    if (oldWidget) { oldWidget->deleteLater(); }
 
-    // 2. Safely delete it and all its children
-    if (oldWidget) {
-        oldWidget->deleteLater();
-    }
-
-    // 2. Create a container widget
     QWidget *containerWidget = new QWidget();
     containerWidget->setFixedHeight(30);
 
@@ -102,14 +95,10 @@ void VerseSelector::onMusicRendered(int numbered, std::string variant,int totalV
 void VerseSelector::onVerseSelectorClicked()
 {
     QPushButton *senderWidget = qobject_cast<QPushButton *>(sender());
-    if (!(!!senderWidget)) {
-        return;
-    }
-    bool ok;
-    int selected = senderWidget->text().toInt(&ok);
-    if (!ok) {
-        return;
-    }
+    if (!(!!senderWidget)) { return; }
+
+    bool ok; int selected = senderWidget->text().toInt(&ok);
+    if (!ok) { return; }
 
     this->selectedVerse = selected;
 

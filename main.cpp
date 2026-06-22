@@ -95,8 +95,7 @@ int main(int argc, char *argv[])
         numSelector->setMinimumHeight(27);
         numSelector->setMinimumWidth(60);
         numSelector->setMaxLength(3);
-        // numSelector->setFixedSize(27, 70);
-        //numSelector->setMaximumHeight(15);
+
         numSelector->setAlignment(Qt::AlignVCenter);
 
         QFrame* buttonHolder = mainWindow.findChild<QFrame*>("frame_2");
@@ -119,39 +118,17 @@ int main(int argc, char *argv[])
         }
     }
 
-    // char* fromDll  = RenderHymnSVG(1, nullptr, nullptr);
-    // 1. Your raw SVG string content
-    // QString svgString =  QString::fromUtf8(fromDll);
 
-    // 2. Convert to QByteArray
-    // QByteArray svgBytes = svgString.toUtf8();
-
-    // 3. Load via QSvgRenderer
     QSvgRenderer* renderer = new QSvgRenderer(&app);
     musicRenderer->setRenderer(renderer);
-
-    // Syntax: this->findChild<WidgetType*>("objectName");
 
     area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     area->setAlignment(Qt::AlignHCenter);
 
-    // if (renderer->load(svgBytes)) {
-    //     // Successfully loaded!
 
-    //     // Example A: Use it inside a QSvgWidget
-    //     QSvgWidget* svgWidget = new QSvgWidget();
-    //     svgWidget->setStyleSheet("background-color:white;");
-    //     svgWidget->setFixedSize(800, 3000);
-    //     svgWidget->renderer()->load(svgBytes);
-    //     if (area) {
-    //         area->setWidget(svgWidget);
-    //     }
-    // }
-    // 7. Call show ONLY on the root window frame.
-    // Children track parent visibility states dynamically and display automatically.
     musicRenderer->onChange(1, "", 0, false);
     mainWindow.show();
-    // delete fromDll;
+
     return app.exec();
 }
 

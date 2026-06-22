@@ -11,18 +11,14 @@ MainWindow::MainWindow(QWidget *parent)
     this->variantFrame->hide();
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::onMusicRendered(int numbered, std::string variant, int totalVariant, int totalVerse)
-{
+void MainWindow::onMusicRendered(int numbered, std::string variant, int totalVariant, int totalVerse) {
     std::string variantLabel[3] = {"a", "b", "c"};
     qDeleteAll(this->variantFrame->findChildren<QWidget*>(QString(), Qt::FindDirectChildrenOnly));
-    if (this->variantFrame->layout() != nullptr) {
-        delete this->variantFrame->layout();
-    }
+    if (this->variantFrame->layout() != nullptr) { delete this->variantFrame->layout(); }
     if (totalVariant == 0) {
         this->variantFrame->hide();
         return;
@@ -41,12 +37,9 @@ void MainWindow::onMusicRendered(int numbered, std::string variant, int totalVar
         pb->setSizePolicy(policy);
         //pb->setMaximumSize(28, 28);
         layout->addWidget(pb, 1, i, Qt::AlignCenter);
-        if  (variant == "")
-            variant = "a";
+        if (variant == "") { variant = "a"; }
+        if (variantLabel[i-1] == variant) { pb->setEnabled(false); }
 
-        if (variantLabel[i-1] == variant) {
-            pb->setEnabled(false);
-        }
         pb->show();
 
         QObject::connect(

@@ -93,7 +93,6 @@ void NumberSelector::onStepChange()
     }
 
     int newVal = this->currentNumber;
-    qInfo() << "clicked step" << stepButton->objectName() << "val" << newVal << "raw";
     QString name = stepButton->objectName();
     (name.compare("btn_increment") == 0) ? newVal++ : newVal--;
 
