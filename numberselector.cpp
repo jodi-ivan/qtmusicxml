@@ -1,7 +1,7 @@
 #include "numberselector.h"
 
-NumberSelector::NumberSelector(QTextEdit *parent)
-    : QTextEdit{parent}
+NumberSelector::NumberSelector(QLineEdit *parent)
+    : QLineEdit{parent}
 {
     this->currentNumber=1;
 }
@@ -10,16 +10,16 @@ void NumberSelector::onChange()
 {
 
     // Alternative: Get the widget via sender() if needed dynamically
-    QTextEdit* senderWidget = qobject_cast<QTextEdit*>(sender());
+    QLineEdit* senderWidget = qobject_cast<QLineEdit*>(sender());
 
-    QString value = senderWidget->toPlainText();
+    QString value = senderWidget->text();
 
     qInfo() << value;
     if (!(!!value.toInt())) {
         if (!value.isEmpty()) {
             value.remove(value.length() - 1, 1);
             senderWidget->setText(value);
-            senderWidget->moveCursor(QTextCursor::End);
+            senderWidget->setCursorPosition(value.length());
         }
         return;
     }
@@ -55,17 +55,17 @@ void NumberSelector::onSelectorChange()
     if (ok) {
         // Conversion succeeded
         this->blockSignals(true);
-        this->setText(this->toPlainText() + nameRaw);
+        this->setText(this->text() + nameRaw);
         this->blockSignals(false);
 
-        this->moveCursor(QTextCursor::End);
+        this->setCursorPosition(this->text().length() + nameRaw.length());
         return;
     }
 
     QString name = senderWidget->objectName();
     if (name.compare("btn_selector_enter") == 0) {
         // press enter
-        QString value = this->toPlainText();
+        QString value = this->text();
         int newVal = value.toInt();
         if (newVal == this->currentNumber) {
             return ;

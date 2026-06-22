@@ -51,6 +51,7 @@ int main(int argc, char *argv[])
     }
     MainWindow mainWindow;
 
+
     QScrollArea* area = mainWindow.findChild<QScrollArea*>("scrollArea");
     MusicRenderer* musicRenderer = new MusicRenderer(area);
 
@@ -73,10 +74,15 @@ int main(int argc, char *argv[])
 
     QFrame* numSelectorFrame = mainWindow.findChild<QFrame*>("num_selector_frame");
     if (numSelectorFrame) {
-        NumberSelector* numSelector = new NumberSelector(new QTextEdit(numSelectorFrame));
-        numSelector->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        NumberSelector* numSelector = new NumberSelector(new QLineEdit(numSelectorFrame));
+        numSelector->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         numSelector->setText("1");
-        numSelector->setLineWidth(1);
+        numSelector->setMinimumHeight(27);
+        numSelector->setMinimumWidth(60);
+        numSelector->setMaxLength(3);
+        // numSelector->setFixedSize(27, 70);
+        //numSelector->setMaximumHeight(15);
+        numSelector->setAlignment(Qt::AlignVCenter);
 
         QFrame* buttonHolder = mainWindow.findChild<QFrame*>("frame_2");
         QList<QPushButton*> allButtons = buttonHolder->findChildren<QPushButton*>();
@@ -87,7 +93,7 @@ int main(int argc, char *argv[])
         }
 
 
-        QObject::connect(numSelector, &QTextEdit::textChanged,  numSelector, &NumberSelector::onChange,  static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
+        QObject::connect(numSelector, &QLineEdit::textChanged,  numSelector, &NumberSelector::onChange,  static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
         QObject::connect(numSelector, &NumberSelector::changeMusic, musicRenderer, &MusicRenderer::onChange, Qt::QueuedConnection);
         if (!!incrementBtn) {
             QObject::connect(incrementBtn, &QPushButton::clicked, numSelector, &NumberSelector::onStepChange,  static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));

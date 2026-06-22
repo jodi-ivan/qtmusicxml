@@ -1,10 +1,10 @@
 #ifndef NUMBERSELECTOR_H
 #define NUMBERSELECTOR_H
 
-#include <QTextEdit>
+#include <QLineEdit>
 #include <QPushButton>
 
-class NumberSelector : public QTextEdit
+class NumberSelector : public QLineEdit
 {
     Q_OBJECT
 
@@ -12,7 +12,7 @@ class NumberSelector : public QTextEdit
     bool locked;
 
 public:
-    explicit NumberSelector(QTextEdit *parent = nullptr);
+    explicit NumberSelector(QLineEdit *parent = nullptr);
 
 signals:
     bool changeMusic(int num, std::string variant, int verse, bool focusMode);
