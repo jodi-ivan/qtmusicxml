@@ -14,7 +14,6 @@ void NumberSelector::onChange()
 
     QString value = senderWidget->text();
 
-    qInfo() << value;
     if (!(!!value.toInt())) {
         if (!value.isEmpty()) {
             value.remove(value.length() - 1, 1);
@@ -44,7 +43,6 @@ void NumberSelector::onSelectorChange()
         return;
     }
 
-    qInfo() << senderWidget->objectName();
     this->setFocus();
 
     QString nameRaw = senderWidget->text();

@@ -15,6 +15,7 @@ class VerseSelector : public QObject
     QCheckBox* focusModeCheckbox;
     QScrollArea* buttonContainers;
     QGroupBox* verseGroupBox;
+    QPushButton* prevBtn; QPushButton* nextBtn;
     int scrollCounter = 0;
     int totalVerse = 0;
     int selectedVerse = 1;

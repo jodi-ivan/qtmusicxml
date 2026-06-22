@@ -26,6 +26,8 @@ VerseSelector::VerseSelector(QObject *parent, QGroupBox* container)
                          &VerseSelector::onScrollClicked,
                          static_cast<Qt::ConnectionType>(Qt::QueuedConnection
                                                          | Qt::UniqueConnection));
+        this->nextBtn = nextScroll;
+        this->prevBtn = prevScroll;
     }
 }
 
@@ -43,10 +45,18 @@ void VerseSelector::onScrollClicked()
     // Instead of counter-based, track pixel offset directly
     (isIncrement) ? this->scrollCounter += 90 : this->scrollCounter -= 90;
 
-    int maxOffset = (this->totalVerse * 30) - 150; // total content width - visible width
+    int maxOffset = ((this->totalVerse+1) * 30) - 150; // total content width - visible width
     this->scrollCounter = std::max(0, std::min(this->scrollCounter, maxOffset));
 
     this->buttonContainers->horizontalScrollBar()->setValue(this->scrollCounter);
+    if (this->scrollCounter >= maxOffset || isIncrement) {
+        this->prevBtn->setEnabled(true);
+    } else if (this->scrollCounter == 0 && !isIncrement) {
+        this->prevBtn->setEnabled(false);
+    }
+
+    this->nextBtn->setEnabled(this->scrollCounter < this->buttonContainers->horizontalScrollBar()->maximum());
+
 
 }
 
@@ -66,6 +76,14 @@ void VerseSelector::onMusicRendered(int numbered, std::string variant,int totalV
 
     QWidget *containerWidget = new QWidget();
     containerWidget->setFixedHeight(30);
+
+    this->prevBtn->setEnabled(false);
+    if (totalVerse+1 <= 5) {
+        this->nextBtn->setEnabled(false);
+        this->prevBtn->setEnabled(false);
+    } else {
+        this->nextBtn->setEnabled(true);
+    }
 
     QHBoxLayout *layout = new QHBoxLayout(containerWidget);
     layout->setContentsMargins(0, 0, 0, 0); // Removes outer padding/margins

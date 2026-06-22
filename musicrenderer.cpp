@@ -68,7 +68,6 @@ void MusicRenderer::onVariantChange(std::string selected)
 
 void MusicRenderer::onVerseChange(int selected, bool focusMode)
 {
-    qInfo() << "verse changed" << selected;
     this->verse = selected;
     this->focusMode = focusMode;
     this->onChange(this->hymnNum, this->variant, selected, focusMode);
