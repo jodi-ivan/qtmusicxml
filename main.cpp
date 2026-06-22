@@ -14,11 +14,13 @@
 #include <QTextEdit>
 #include <QStyleFactory>
 #include <QStyleHints>
+#include <QGroupBox>
 
 #include "libhymn_renderer.h"
 #include "mainwindow.h"
 #include "musicrenderer.h"
 #include "numberselector.h"
+#include "verseselector.h"
 
 int main(int argc, char *argv[])
 {
@@ -51,17 +53,30 @@ int main(int argc, char *argv[])
     }
     MainWindow mainWindow;
 
+    QGroupBox* verseGroupBox = mainWindow.findChild<QGroupBox*>("verseGroupBox");
+    VerseSelector* verseSelector = new VerseSelector(&mainWindow, verseGroupBox);
 
     QScrollArea* area = mainWindow.findChild<QScrollArea*>("scrollArea");
     MusicRenderer* musicRenderer = new MusicRenderer(area);
 
     QObject::connect(musicRenderer, &MusicRenderer::musicRendered,
-                     &mainWindow, &MainWindow::onMusicRendered ,
+                     &mainWindow, &MainWindow::onMusicRendered , // for the variant selector
                      static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection) );
+
+    QObject::connect(musicRenderer, &MusicRenderer::musicRendered,
+                     verseSelector, &VerseSelector::onMusicRendered , // for verse selector
+                     static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection) );
+
 
     QObject::connect(&mainWindow, &MainWindow::VariantSelected,
                      musicRenderer, &MusicRenderer::onVariantChange,
                      static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection) );
+
+    QObject::connect(verseSelector,
+                     &VerseSelector::verseSelected,
+                     musicRenderer,
+                     &MusicRenderer::onVerseChange,
+                     static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
 
     QPushButton* decrementBtn = mainWindow.findChild<QPushButton*>("btn_decrement");
     QPushButton* incrementBtn = mainWindow.findChild<QPushButton*>("btn_increment");
@@ -104,12 +119,12 @@ int main(int argc, char *argv[])
         }
     }
 
-    char* fromDll  = RenderHymnSVG(1, nullptr, nullptr);
+    // char* fromDll  = RenderHymnSVG(1, nullptr, nullptr);
     // 1. Your raw SVG string content
-    QString svgString =  QString::fromUtf8(fromDll);
+    // QString svgString =  QString::fromUtf8(fromDll);
 
     // 2. Convert to QByteArray
-    QByteArray svgBytes = svgString.toUtf8();
+    // QByteArray svgBytes = svgString.toUtf8();
 
     // 3. Load via QSvgRenderer
     QSvgRenderer* renderer = new QSvgRenderer(&app);
@@ -120,22 +135,23 @@ int main(int argc, char *argv[])
     area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     area->setAlignment(Qt::AlignHCenter);
 
-    if (renderer->load(svgBytes)) {
-        // Successfully loaded!
+    // if (renderer->load(svgBytes)) {
+    //     // Successfully loaded!
 
-        // Example A: Use it inside a QSvgWidget
-        QSvgWidget* svgWidget = new QSvgWidget();
-        svgWidget->setStyleSheet("background-color:white;");
-        svgWidget->setFixedSize(800, 3000);
-        svgWidget->renderer()->load(svgBytes);
-        if (area) {
-            area->setWidget(svgWidget);
-        }
-    }
+    //     // Example A: Use it inside a QSvgWidget
+    //     QSvgWidget* svgWidget = new QSvgWidget();
+    //     svgWidget->setStyleSheet("background-color:white;");
+    //     svgWidget->setFixedSize(800, 3000);
+    //     svgWidget->renderer()->load(svgBytes);
+    //     if (area) {
+    //         area->setWidget(svgWidget);
+    //     }
+    // }
     // 7. Call show ONLY on the root window frame.
     // Children track parent visibility states dynamically and display automatically.
+    musicRenderer->onChange(1, "", 0, false);
     mainWindow.show();
-    delete fromDll;
+    // delete fromDll;
     return app.exec();
 }
 

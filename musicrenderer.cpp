@@ -27,8 +27,14 @@ void MusicRenderer::onChange(int num, std::string variant, int verse, bool focus
         if (variant != "") {
             variantPtr = variant.data();
         }
-        char* fromDll = RenderHymnSVGWithInfo(num, variantPtr, nullptr, totalVerse, totalVariant);
-        QString svgString =  QString::fromUtf8(fromDll);
+
+        char *config = nullptr;
+        if (verse > 0) {
+            std::string cnfStr = "{\"verse\": " + std::to_string(verse) + "}";
+            config = cnfStr.data();
+        }
+        char *fromDll = RenderHymnSVGWithInfo(num, variantPtr, config, totalVerse, totalVariant);
+        QString svgString = QString::fromUtf8(fromDll);
 
         // 2. Convert to QByteArray
         QByteArray svgBytes = svgString.toUtf8();
@@ -37,7 +43,7 @@ void MusicRenderer::onChange(int num, std::string variant, int verse, bool focus
             // Successfully loaded!
 
             // Example A: Use it inside a QSvgWidget
-            QSvgWidget* svgWidget = new QSvgWidget();
+            QSvgWidget *svgWidget = new QSvgWidget();
             svgWidget->setStyleSheet("background-color:white;");
             svgWidget->setFixedSize(800, 3000);
             svgWidget->renderer()->load(svgBytes);
@@ -50,14 +56,20 @@ void MusicRenderer::onChange(int num, std::string variant, int verse, bool focus
                 emit this->musicRendered(num, variant, *totalVariant, *totalVerse);
             }
         }
-
-    } catch (const std::exception& e) {
+    } catch (const std::exception &e) {
         qInfo() << "failed" << e.what();
     }
-
 }
 
 void MusicRenderer::onVariantChange(std::string selected)
 {
     this->onChange(this->hymnNum, selected, this->verse, this->focusMode);
+}
+
+void MusicRenderer::onVerseChange(int selected, bool focusMode)
+{
+    qInfo() << "verse changed" << selected;
+    this->verse = selected;
+    this->focusMode = focusMode;
+    this->onChange(this->hymnNum, this->variant, selected, focusMode);
 }

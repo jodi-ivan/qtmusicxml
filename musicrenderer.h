@@ -1,8 +1,8 @@
 #ifndef MUSICRENDERER_H
 #define MUSICRENDERER_H
 
-#include <QObject>
 #include <QDebug>
+#include <QObject>
 #include <QScrollArea>
 #include <QSvgRenderer>
 #include <QSvgWidget>
@@ -30,6 +30,7 @@ signals:
 public slots:
     void onChange(int num, std::string variant, int verse, bool focusMode);
     void onVariantChange(std::string selected);
+    void onVerseChange(int selected, bool focusMode);
 };
 
 #endif // MUSICRENDERER_H

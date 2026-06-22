@@ -25,6 +25,7 @@ signals:
 public slots:
     void onMusicRendered(int numbered, std::string variant , int totalVariant, int totalVerse);
     void onVariantClicked();
+  //  void updateVerseSelector();
 
 private:
     Ui::MainWindow *ui;

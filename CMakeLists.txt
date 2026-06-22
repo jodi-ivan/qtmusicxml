@@ -25,6 +25,7 @@ SOURCES mainwindow.h mainwindow.cpp
 RESOURCES mainwindow.ui
 SOURCES musicrenderer.h musicrenderer.cpp
 SOURCES numberselector.h numberselector.cpp
+SOURCES verseselector.h verseselector.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

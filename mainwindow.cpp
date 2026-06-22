@@ -49,7 +49,6 @@ void MainWindow::onMusicRendered(int numbered, std::string variant, int totalVar
         }
         pb->show();
 
-
         QObject::connect(
             pb, &QPushButton::clicked,
             this, &MainWindow::onVariantClicked,
