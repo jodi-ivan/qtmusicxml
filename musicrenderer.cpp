@@ -40,13 +40,14 @@ void MusicRenderer::onChange(int num, std::string variant, int verse, bool focus
         QByteArray svgBytes = svgString.toUtf8();
 
         if (this->svgRenderer->load(svgBytes)) {
-            // Successfully loaded!
 
-            // Example A: Use it inside a QSvgWidget
             QSvgWidget *svgWidget = new QSvgWidget();
             svgWidget->setStyleSheet("background-color:white;");
-            svgWidget->setFixedSize(800, 3000);
             svgWidget->renderer()->load(svgBytes);
+
+            int internalHeight = svgWidget->renderer()->defaultSize().height();
+            svgWidget->setFixedSize(800, internalHeight);
+
             if (area) {
                 area->setWidget(svgWidget);
                 this->hymnNum = num;
@@ -56,6 +57,8 @@ void MusicRenderer::onChange(int num, std::string variant, int verse, bool focus
                 emit this->musicRendered(num, variant, *totalVariant, *totalVerse);
             }
         }
+        delete fromDll;
+        // FreeRenderedString(fromDll);
     } catch (const std::exception &e) {
         qInfo() << "failed" << e.what();
     }
