@@ -1,5 +1,7 @@
 #include "musicrenderer.h"
 
+#include "overlaywidget.h"
+
 
 
 MusicRenderer::MusicRenderer(QObject *parent)
@@ -41,24 +43,54 @@ void MusicRenderer::onChange(int num, std::string variant, int verse, bool focus
 
         if (this->svgRenderer->load(svgBytes)) {
 
+
+            // 1. Create the SVG Widget exactly as you did before
             QSvgWidget *svgWidget = new QSvgWidget();
+
             svgWidget->setStyleSheet("background-color:white;");
             svgWidget->renderer()->load(svgBytes);
 
             int internalHeight = svgWidget->renderer()->defaultSize().height();
-            svgWidget->setFixedSize(800, internalHeight);
+            QSize targetSize(800, internalHeight);
+            svgWidget->setFixedSize(targetSize);
 
-            if (area) {
-                area->setWidget(svgWidget);
-                this->hymnNum = num;
-                this->variant = variant;
-                this->verse = verse;
-                this->focusMode = focusMode;
-                emit this->musicRendered(num, variant, *totalVariant, *totalVerse);
-            }
+            // 2. Create a plain container widget to hold both items
+            QWidget *scrollContainer = new QWidget();
+            scrollContainer->setFixedSize(targetSize); // Size it exactly to match your SVG
+
+            // 3. Set the container as the single widget inside the scroll area
+            area->setWidget(scrollContainer);
+
+            // 4. Place the SVG Widget inside the container (Absolute positioning)
+            svgWidget->setParent(scrollContainer);
+            svgWidget->move(0, 0); // Align to top-left
+            svgWidget->show();
+
+            // 5. Place the Overlay Widget inside the container
+            // Ensure you have defined your OverlayWidget class (from the first response)
+            OverlayWidget *overlay = new OverlayWidget(scrollContainer);
+
+            overlay->resize(targetSize); // Match the container/SVG boundaries
+            overlay->raise();            // Force it to stack above the SVG
+            overlay->show();
+
+            QPushButton* button = new QPushButton(scrollContainer);
+            button->setText("Zoom!");
+            button->setGeometry(750, 10, 50, 25);
+            button->show();
+            this->hymnNum = num;
+            this->variant = variant;
+            this->verse = verse;
+            this->focusMode = focusMode;
+            emit this->musicRendered(num, variant, *totalVariant, *totalVerse);
+
         }
-        delete fromDll;
         // FreeRenderedString(fromDll);
+        delete fromDll;
+
+        // Clean up your dynamic pointers if they aren't managed elsewhere
+        delete totalVariant;
+        delete totalVerse;
     } catch (const std::exception &e) {
         qInfo() << "failed" << e.what();
     }

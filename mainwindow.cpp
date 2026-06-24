@@ -50,6 +50,8 @@ void MainWindow::onMusicRendered(int numbered, std::string variant, int totalVar
     }
     this->variantFrame->show();
 
+
+
 }
 
 void MainWindow::onVariantClicked()

@@ -6,8 +6,12 @@
 #include <QScrollArea>
 #include <QSvgRenderer>
 #include <QSvgWidget>
+#include <QVBoxLayout>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 
 #include "libhymn_renderer.h"
+
 
 class MusicRenderer : public QObject
 {
