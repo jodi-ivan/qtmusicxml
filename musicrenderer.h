@@ -9,6 +9,7 @@
 #include <QVBoxLayout>
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QScrollBar>
 
 #include "libhymn_renderer.h"
 

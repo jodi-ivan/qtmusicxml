@@ -43,8 +43,6 @@ void MusicRenderer::onChange(int num, std::string variant, int verse, bool focus
 
         if (this->svgRenderer->load(svgBytes)) {
 
-
-            // 1. Create the SVG Widget exactly as you did before
             QSvgWidget *svgWidget = new QSvgWidget();
 
             svgWidget->setStyleSheet("background-color:white;");
@@ -54,17 +52,32 @@ void MusicRenderer::onChange(int num, std::string variant, int verse, bool focus
             QSize targetSize(800, internalHeight);
             svgWidget->setFixedSize(targetSize);
 
-            // 2. Create a plain container widget to hold both items
             QWidget *scrollContainer = new QWidget();
             scrollContainer->setFixedSize(targetSize); // Size it exactly to match your SVG
 
-            // 3. Set the container as the single widget inside the scroll area
             area->setWidget(scrollContainer);
 
-            // 4. Place the SVG Widget inside the container (Absolute positioning)
-            svgWidget->setParent(scrollContainer);
             svgWidget->move(0, 0); // Align to top-left
             svgWidget->show();
+
+
+            QGraphicsScene *scene = new QGraphicsScene(scrollContainer);
+            QGraphicsView *view = new QGraphicsView(scene, scrollContainer);
+            view->setStyleSheet("QGraphicsView { border: 2px solid red; }");
+;
+            view->scale(1.2, 1.2); // zoom
+            view->centerOn(QPointF(500.0, 500.0)); // scroll
+
+
+            scene->setBackgroundBrush(Qt::lightGray);
+
+            svgWidget->setStyleSheet("border: 2px solid blue;");
+
+            // scene->setStyle()
+            view->setFixedSize(targetSize);
+            scene->addWidget(svgWidget);
+            svgWidget->setParent(view);
+            // view->show();
 
             // 5. Place the Overlay Widget inside the container
             // Ensure you have defined your OverlayWidget class (from the first response)
