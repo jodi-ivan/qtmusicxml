@@ -10,6 +10,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QScrollBar>
+#include <QGraphicsProxyWidget>
 
 #include "libhymn_renderer.h"
 

@@ -19,7 +19,7 @@ void MusicRenderer::onChange(int num, std::string variant, int verse, bool focus
 {
 
     try {
-        QScrollArea* area = qobject_cast<QScrollArea*>(this->parent());
+        QFrame* area = qobject_cast<QFrame*>(this->parent());
         if (!(!!area)) {
             return;
         }
@@ -43,54 +43,54 @@ void MusicRenderer::onChange(int num, std::string variant, int verse, bool focus
 
         if (this->svgRenderer->load(svgBytes)) {
 
-            QSvgWidget *svgWidget = new QSvgWidget();
+            QWidget *containerArea = new QWidget(area);
 
-            svgWidget->setStyleSheet("background-color:white;");
+            QSvgWidget *svgWidget = new QSvgWidget();
             svgWidget->renderer()->load(svgBytes);
+            svgWidget->setStyleSheet("background-color: white; border: 2px solid blue;");
 
             int internalHeight = svgWidget->renderer()->defaultSize().height();
             QSize targetSize(800, internalHeight);
             svgWidget->setFixedSize(targetSize);
 
-            QWidget *scrollContainer = new QWidget();
-            scrollContainer->setFixedSize(targetSize); // Size it exactly to match your SVG
-
-            area->setWidget(scrollContainer);
-
-            svgWidget->move(0, 0); // Align to top-left
-            svgWidget->show();
-
-
-            QGraphicsScene *scene = new QGraphicsScene(scrollContainer);
-            QGraphicsView *view = new QGraphicsView(scene, scrollContainer);
-            view->setStyleSheet("QGraphicsView { border: 2px solid red; }");
-;
-            view->scale(1.2, 1.2); // zoom
-            view->centerOn(QPointF(500.0, 500.0)); // scroll
-
-
+            QGraphicsScene *scene = new QGraphicsScene(containerArea);
             scene->setBackgroundBrush(Qt::lightGray);
+            scene->setSceneRect(0, 0, targetSize.width(), targetSize.height());
 
-            svgWidget->setStyleSheet("border: 2px solid blue;");
+            QGraphicsView *view = new QGraphicsView(scene, containerArea);
+            view->setStyleSheet("QGraphicsView { border: 2px solid red; }");
 
-            // scene->setStyle()
-            view->setFixedSize(targetSize);
-            scene->addWidget(svgWidget);
-            svgWidget->setParent(view);
-            // view->show();
+            QSize containerSize(800, 600);
+            view->setFixedSize(containerSize);
+            view->setMinimumSize(800, 600);
+            view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+            view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
-            // 5. Place the Overlay Widget inside the container
-            // Ensure you have defined your OverlayWidget class (from the first response)
-            OverlayWidget *overlay = new OverlayWidget(scrollContainer);
+            // Do NOT call svgWidget->setParent(view) after this!
+            QGraphicsProxyWidget *proxy = scene->addWidget(svgWidget);
+            proxy->setPos(0, 0);
 
-            overlay->resize(targetSize); // Match the container/SVG boundaries
-            overlay->raise();            // Force it to stack above the SVG
-            overlay->show();
+            view->scale(0.7, 0.7);
+            view->centerOn(QPointF(500.0, 500.0));
 
-            QPushButton* button = new QPushButton(scrollContainer);
+            // 3. Fix the Overlay
+            // If the overlay needs to zoom/scroll WITH the SVG, add it to the scene too:
+            OverlayWidget *overlay = new OverlayWidget();
+            overlay->resize(targetSize);
+
+            // what is this magic that allows the overlay to be stick and same relavtive with the svg even the view is scaled.
+            QGraphicsProxyWidget *overlayProxy = scene->addWidget(overlay);
+            overlayProxy->setPos(0, 0);
+
+            overlayProxy->setZValue(1); // Forces it to stack on top of the SVG proxy
+            QPushButton* button = new QPushButton(containerArea);
             button->setText("Zoom!");
             button->setGeometry(750, 10, 50, 25);
             button->show();
+
+
+            area->show();
+            containerArea->show();
             this->hymnNum = num;
             this->variant = variant;
             this->verse = verse;

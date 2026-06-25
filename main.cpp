@@ -8,7 +8,6 @@
 #include <QVBoxLayout>
 #include <QFontDatabase>
 #include <QDir>
-#include <QScrollArea>
 #include <QPushButton>
 #include <QButtonGroup>
 #include <QTextEdit>
@@ -54,9 +53,13 @@ int main(int argc, char *argv[])
     MainWindow mainWindow;
 
     QGroupBox* verseGroupBox = mainWindow.findChild<QGroupBox*>("verseGroupBox");
+    // if (!verseGroupBox) {
+        qInfo() << verseGroupBox << "verse group box not found";
+    // }
     VerseSelector* verseSelector = new VerseSelector(&mainWindow, verseGroupBox);
 
-    QScrollArea* area = mainWindow.findChild<QScrollArea*>("scrollArea");
+    QFrame* area = mainWindow.findChild<QFrame*>("musicAreaFrame");
+    qInfo() << area << "this is the area qframe";
     MusicRenderer* musicRenderer = new MusicRenderer(area);
 
     QObject::connect(musicRenderer, &MusicRenderer::musicRendered,
@@ -122,8 +125,8 @@ int main(int argc, char *argv[])
     QSvgRenderer* renderer = new QSvgRenderer(&app);
     musicRenderer->setRenderer(renderer);
 
-    area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    area->setAlignment(Qt::AlignHCenter);
+    // area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    // area->setAlignment(Qt::AlignHCenter);
 
 
     musicRenderer->onChange(1, "", 0, false);
